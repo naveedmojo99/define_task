@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TagRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class TagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,15 @@ class TagRequest extends FormRequest
      */
     public function rules(): array
     {
+        $tagId = $this->route('id'); // Get the current tag ID from the route
+
         return [
-            'name' => 'required|string|max:255|unique:tags',
+            'name' => [
+                'required',
+                Rule::unique('tags', 'name')->ignore($tagId),
+            ],
+           
+
         ];
     }
 }

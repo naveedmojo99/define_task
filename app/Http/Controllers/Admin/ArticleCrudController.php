@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ArticleRequest;
+use App\Models\Article;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -56,12 +57,37 @@ class ArticleCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(ArticleRequest::class);
+
+
         CRUD::setFromDb(); // set fields from db columns.
 
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+ 
+        CRUD::field('image')->type('upload')->withFiles([
+            'disk' => 'public', 
+            'path' => 'articles', 
+        ]);
+        $this->crud->addField([
+            'label' => "Category",
+            'type' => 'select',
+            'name' => 'category_id', // the db column
+            'entity' => 'category', // the method in your model
+            'model' => "App\Models\Category", // related model
+            'attribute' => 'name', // shown in the dropdown
+        ]);
+
+        CRUD::addField([
+            'label' => 'Tags',
+            'type' => 'select_multiple', // NOT select2_multiple
+            'name' => 'tags',
+            'entity' => 'tags',
+            'model' => "App\Models\Tag",
+            'attribute' => 'name',
+            'pivot' => true,
+        ]);
+        
+       
+        
+
     }
 
     /**
@@ -74,4 +100,8 @@ class ArticleCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+
+
+    
+    
 }

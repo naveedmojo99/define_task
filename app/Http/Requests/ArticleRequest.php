@@ -21,12 +21,15 @@ class ArticleRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
             return [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
                 'category_id' => 'required|exists:categories,id', 
+                'tags' => 'nullable|array',
+                'tags.*' => 'exists:tags,id',
+
             ];
         
     }
